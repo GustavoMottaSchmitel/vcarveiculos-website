@@ -17,10 +17,10 @@ export interface CarFilters {
   profile: string
   budget: string
   usage: string
-  fuelType?: string
-  transmission?: string
-  financing?: string
-  [key: string]: string | undefined
+  fuelType: string
+  transmission: string
+  financing: string
+  [key: string]: string
 }
 
 interface OptionBase {
@@ -256,6 +256,91 @@ const questions: QuestionType[] = [
   }
 ]
 
+// Função para converter filtros do chatbot para filtros da galeria
+const convertChatbotFiltersToGalleryFilters = (chatbotFilters: CarFilters) => {
+  const filters: any = {
+    search: '',
+    tipo: [],
+    marca: [],
+    minPrice: "",
+    maxPrice: "",
+    minKm: "",
+    maxKm: "",
+    year: "",
+    fuel: "",
+    transmission: "",
+    sortBy: "year_desc" as const
+  }
+
+  // Converter perfil para tags/marcas
+  if (chatbotFilters.profile) {
+    switch (chatbotFilters.profile) {
+      case 'familia':
+        filters.marca = ['CHEVROLET', 'FIAT', 'VOLKSWAGEN']
+        break
+      case 'trabalho':
+        filters.marca = ['FORD', 'TOYOTA']
+        break
+      case 'primeiro-carro':
+        filters.marca = ['CHEVROLET', 'FIAT', 'RENAULT', 'VOLKSWAGEN']
+        break
+      case 'cidade':
+        filters.marca = ['CHEVROLET', 'FIAT', 'HYUNDAI']
+        break
+    }
+  }
+
+  // Converter orçamento para faixa de preço
+  if (chatbotFilters.budget) {
+    switch (chatbotFilters.budget) {
+      case 'ate-30':
+        filters.maxPrice = "30000"
+        break
+      case '30-50':
+        filters.minPrice = "30000"
+        filters.maxPrice = "50000"
+        break
+      case '50-80':
+        filters.minPrice = "50000"
+        filters.maxPrice = "80000"
+        break
+      case '80-120':
+        filters.minPrice = "80000"
+        filters.maxPrice = "120000"
+        break
+    }
+  }
+
+  // Converter tipo de combustível
+  if (chatbotFilters.fuelType) {
+    switch (chatbotFilters.fuelType) {
+      case 'flex':
+        filters.fuel = 'Flex'
+        break
+      case 'gasolina':
+        filters.fuel = 'Gasolina'
+        break
+      case 'diesel':
+        filters.fuel = 'Diesel'
+        break
+    }
+  }
+
+  // Converter transmissão
+  if (chatbotFilters.transmission) {
+    switch (chatbotFilters.transmission) {
+      case 'automatico':
+        filters.transmission = 'Automático'
+        break
+      case 'manual':
+        filters.transmission = 'Manual'
+        break
+    }
+  }
+
+  return filters
+}
+
 export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarChatbotProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState<CarFilters>({
@@ -327,14 +412,29 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
     }
   }
 
-  // Converter CarFilters para query string seguro
+  // Converter CarFilters para query string para a galeria
   const getQueryParams = () => {
+    const galleryFilters = convertChatbotFiltersToGalleryFilters(answers)
+    
     const params: Record<string, string> = {}
-    Object.entries(answers).forEach(([key, value]) => {
-      if (value) {
-        params[key] = value
+    
+    // Adicionar filtros convertidos
+    Object.entries(galleryFilters).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        if (value.length > 0) {
+          params[key] = value.join(',')
+        }
+      } else if (value && value !== "") {
+        params[key] = value.toString()
       }
     })
+    
+    // Adicionar informações pessoais para contato
+    if (answers.name) params.name = answers.name
+    if (answers.email) params.email = answers.email
+    if (answers.phone) params.phone = answers.phone
+    if (answers.profile) params.profile = answers.profile
+    
     return params
   }
 
@@ -342,7 +442,6 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
     <section className="min-h-screen flex items-center justify-center px-4 py-12 md:py-20 bg-linear-to-br from-[#0F0900] via-[#1A1206] to-[#241A0B] relative overflow-hidden">
       
       {/* Background decorative elements */}
-      
       <div className="absolute inset-0">
         <div className="absolute top-10 right-10 w-64 h-64 bg-linear-to-br from-[#D4AF37]/20 to-[#FFD700]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-10 left-10 w-80 h-80 bg-linear-to-tr from-[#B8860B]/15 to-[#D4AF37]/10 rounded-full blur-3xl" />
@@ -416,7 +515,6 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
           </div>
 
           {/* Card Content */}
-
           <div className="p-6 md:p-8">
             {currentQuestion.isPersonalInfo ? (
               <div className="space-y-6">
@@ -436,7 +534,6 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
                 </div>
                 
                 {/* Value Preview com dourado */}
-                
                 {answers[currentQuestion.id] && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -502,7 +599,6 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
                       </div>
 
                       {/* Hover effect com brilho dourado */}
-
                       <div className="absolute inset-0 bg-linear-to-br from-[#FFD700]/0 to-[#B8860B]/0 group-hover:from-[#FFD700]/5 group-hover:to-[#B8860B]/5 transition-all duration-300" />
                     </motion.button>
                   )
@@ -597,7 +693,7 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {Object.entries(answers)
-                .filter(([value]) => value)
+                .filter(([_, value]) => value)
                 .map(([key, value], index) => {
                   const question = questions.find(q => q.id === key)
                   const option = question?.options?.find(opt => opt.value === value)

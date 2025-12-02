@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
@@ -12,7 +12,6 @@ import {
   Cog, 
   Users, 
   X,
-  ChevronDown,
   Info,
   Shield,
   Clock,
@@ -23,9 +22,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Phone,
-  Star,
   Check,
-  ChevronUp
+  ChevronUp,
+  ChevronRight as ChevronRightIcon
 } from "lucide-react"
 
 // Types
@@ -63,8 +62,8 @@ interface CarType {
 }
 
 interface FiltersType {
-  tipo: string[]
-  marca: string[]
+  tipo: TipoOption[]
+  marca: MarcaOption[]
   minPrice: string
   maxPrice: string
   minKm: string
@@ -76,8 +75,10 @@ interface FiltersType {
   sortBy: "price_asc" | "price_desc" | "year_desc" | "year_asc"
 }
 
-// Constants
+// Constants com tipos explícitos
 const TIPO_OPTIONS = ["AUTOMÓVEL", "MOTO"] as const
+type TipoOption = typeof TIPO_OPTIONS[number]
+
 const MARCA_OPTIONS = [
   "CADILLAC",
   "CHEVROLET", 
@@ -95,9 +96,12 @@ const MARCA_OPTIONS = [
   "AUDI",
   "PEUGEOT"
 ] as const
+type MarcaOption = typeof MARCA_OPTIONS[number]
 
 const FUEL_TYPES = ["Flex", "Gasolina", "Diesel", "Elétrico", "Álcool"] as const
+
 const TRANSMISSION_TYPES = ["Manual", "Automático"] as const
+
 const YEARS = Array.from({ length: 30 }, (_, i) => (2024 - i).toString())
 
 // Função para gerar múltiplas imagens de exemplo
@@ -585,38 +589,42 @@ const CarDetailsModal = ({ car, isOpen, onClose }: CarDetailsModalProps) => {
   )
 }
 
-const getFiltersFromSearchParams = (searchParams: URLSearchParams): Partial<FiltersType> => {
-  const newFilters: Partial<FiltersType> = {}
-  const search = searchParams.get('search')
-  const marca = searchParams.get('marca')
-  const tipo = searchParams.get('tipo')
-
-  if (search) newFilters.search = search
-  if (marca) newFilters.marca = [marca]
-  if (tipo) newFilters.tipo = [tipo]
-
-  return newFilters
+// Função auxiliar para verificar tipos
+const isValidTipoOption = (value: string): value is TipoOption => {
+  return TIPO_OPTIONS.includes(value as TipoOption)
 }
 
-const initialFilters: FiltersType = {
-  tipo: [],
-  marca: [],
-  minPrice: "",
-  maxPrice: "",
-  minKm: "",
-  maxKm: "",
-  year: "",
-  fuel: "",
-  transmission: "",
-  search: "",
-  sortBy: "year_desc"
+const isValidMarcaOption = (value: string): value is MarcaOption => {
+  return MARCA_OPTIONS.includes(value as MarcaOption)
 }
 
-export default function GaleriaContent() {
+const isValidSortByOption = (value: string): value is FiltersType['sortBy'] => {
+  return ['price_asc', 'price_desc', 'year_desc', 'year_asc'].includes(value)
+}
+
+// Componente principal que usa useSearchParams
+const GaleriaContentInner = () => {
   const searchParams = useSearchParams()
   const [filters, setFilters] = useState<FiltersType>(() => {
-    const urlFilters = getFiltersFromSearchParams(searchParams)
-    return { ...initialFilters, ...urlFilters }
+    // Extrair filtros da URL com validação de tipos
+    const search = searchParams.get('search') || ''
+    const marcaParam = searchParams.get('marca')?.split(',') || []
+    const tipoParam = searchParams.get('tipo')?.split(',') || []
+    const sortByParam = searchParams.get('sortBy')
+    
+    return {
+      tipo: tipoParam.filter((t): t is TipoOption => isValidTipoOption(t)),
+      marca: marcaParam.filter((m): m is MarcaOption => isValidMarcaOption(m)),
+      minPrice: searchParams.get('minPrice') || "",
+      maxPrice: searchParams.get('maxPrice') || "",
+      minKm: searchParams.get('minKm') || "",
+      maxKm: searchParams.get('maxKm') || "",
+      year: searchParams.get('year') || "",
+      fuel: searchParams.get('fuel') || "",
+      transmission: searchParams.get('transmission') || "",
+      search: search,
+      sortBy: sortByParam && isValidSortByOption(sortByParam) ? sortByParam : "year_desc"
+    }
   })
   const [showFilters, setShowFilters] = useState(true)
   const [selectedCar, setSelectedCar] = useState<CarType | null>(null)
@@ -631,7 +639,7 @@ export default function GaleriaContent() {
 
   // Filtragem otimizada
   const filteredCars = useMemo(() => {
-    let filtered = carsWithSingleImage.filter((car) => {
+    const filtered = carsWithSingleImage.filter((car) => {
       // Filtro de busca
       if (filters.search) {
         const searchLower = filters.search.toLowerCase()
@@ -647,11 +655,11 @@ export default function GaleriaContent() {
       // Filtro de tipo
       if (filters.tipo.length > 0) {
         const carType = car.condition.toLowerCase().includes('moto') ? 'MOTO' : 'AUTOMÓVEL'
-        if (!filters.tipo.includes(carType)) return false
+        if (!filters.tipo.includes(carType as TipoOption)) return false
       }
 
       // Filtro de marca
-      if (filters.marca.length > 0 && !filters.marca.includes(car.brand.toUpperCase())) {
+      if (filters.marca.length > 0 && !filters.marca.includes(car.brand.toUpperCase() as MarcaOption)) {
         return false
       }
 
@@ -713,10 +721,22 @@ export default function GaleriaContent() {
   }, [filters, carsWithSingleImage])
 
   const clearFilters = useCallback(() => {
-    setFilters(initialFilters)
+    setFilters({
+      tipo: [],
+      marca: [],
+      minPrice: "",
+      maxPrice: "",
+      minKm: "",
+      maxKm: "",
+      year: "",
+      fuel: "",
+      transmission: "",
+      search: "",
+      sortBy: "year_desc"
+    })
   }, [])
 
-  const toggleTipo = useCallback((tipo: string) => {
+  const toggleTipo = useCallback((tipo: TipoOption) => {
     setFilters(prev => ({
       ...prev,
       tipo: prev.tipo.includes(tipo) 
@@ -725,7 +745,7 @@ export default function GaleriaContent() {
     }))
   }, [])
 
-  const toggleMarca = useCallback((marca: string) => {
+  const toggleMarca = useCallback((marca: MarcaOption) => {
     setFilters(prev => ({
       ...prev,
       marca: prev.marca.includes(marca) 
@@ -815,7 +835,12 @@ export default function GaleriaContent() {
 
               <select
                 value={filters.sortBy}
-                onChange={(e) => handleFilterChange('sortBy', e.target.value as any)}
+                onChange={(e) => {
+                  const value = e.target.value
+                  if (isValidSortByOption(value)) {
+                    handleFilterChange('sortBy', value)
+                  }
+                }}
                 className="px-4 py-2 bg-white border-2 border-[#DAA520]/30 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#DAA520] shadow-lg"
               >
                 <option value="year_desc">Mais novos primeiro</option>
@@ -1190,7 +1215,7 @@ export default function GaleriaContent() {
                       >
                         <MessageCircle className="w-6 h-6" />
                         WhatsApp
-                        <ChevronRight className="w-5 h-5" />
+                        <ChevronRightIcon className="w-5 h-5" />
                       </motion.a>
                       <motion.a
                         whileHover={{ scale: 1.05 }}
@@ -1200,7 +1225,7 @@ export default function GaleriaContent() {
                       >
                         <Phone className="w-6 h-6" />
                         Ligar Agora
-                        <ChevronRight className="w-5 h-5" />
+                        <ChevronRightIcon className="w-5 h-5" />
                       </motion.a>
                     </div>
                   </div>
@@ -1221,5 +1246,21 @@ export default function GaleriaContent() {
         }} 
       />
     </>
+  )
+}
+
+// Componente wrapper com Suspense
+export default function GaleriaContent() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#DAA520] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando galeria...</p>
+        </div>
+      </div>
+    }>
+      <GaleriaContentInner />
+    </Suspense>
   )
 }
