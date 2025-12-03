@@ -13,7 +13,6 @@ export default function GaleriaPage() {
       <main className="min-h-screen">
         <div className="pt-16 lg:pt-20">
           <GaleriaContent />
-          <GaleriaContent />
         </div>
       </main>
     </Suspense>

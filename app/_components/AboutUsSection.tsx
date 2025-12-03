@@ -135,10 +135,8 @@ export default function AboutUsSection() {
           </p>
         </div>
 
-        {/* Showroom & Qualidade */}
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 mb-20">
           
-          {/* Coluna do Showroom/Video */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -301,7 +299,7 @@ export default function AboutUsSection() {
                 <h4 className="font-bold text-white">Experiência Imersiva</h4>
               </div>
               <p className="text-sm text-gray-400">
-                Nosso showroom virtual permite que você conheça cada detalhe dos veículos, 
+                Nossa loja permite que você conheça cada detalhe dos veículos, 
                 mesmo à distância. Qualidade que você pode ver e sentir.
               </p>
             </div>
@@ -387,11 +385,11 @@ export default function AboutUsSection() {
               </div>
 
               <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-                Conheça nosso Showroom
+                Conheça nossa loja
               </h2>
 
               <p className="mx-auto mb-8 max-w-xl text-lg text-gray-400">
-                Venha nos visitar ou assista ao vídeo para conhecer nosso espaço e nossa equipe. 
+                Venha nos visitar ou assista ao vídeo para conhecer nosso espaço. 
                 Estamos prontos para ajudar você a encontrar o carro perfeito.
               </p>
 
@@ -405,7 +403,7 @@ export default function AboutUsSection() {
                     className="inline-flex items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#B8860B] to-[#FFD700] px-8 py-4 text-lg font-bold text-gray-900 shadow-2xl transition-all duration-300 hover:from-[#DAA520] hover:to-[#FFD700]"
                   >
                     <Users className="h-6 w-6" />
-                    Falar com Consultor
+                    Falar conosco
                     <ArrowRight className="h-5 w-5" />
                   </Link>
                 </motion.div>
