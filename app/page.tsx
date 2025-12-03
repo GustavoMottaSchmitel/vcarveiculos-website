@@ -1,5 +1,9 @@
+import AboutUsSection from "./_components/AboutUsSection";
 import { CarChatbot } from "./_components/CarChatbot";
+import ContactSection from "./_components/ContactSection";
 import HeroSection from "./_components/HeroSection";
+import TestimonialsPage from "./_components/Testimonials";
+import WhyChooseUsSection from "./_components/WhyChooseUsSection";
 
 export default function Home() {
   return (
@@ -8,15 +12,17 @@ export default function Home() {
       <div className="pt-16 lg:pt-20">
         <HeroSection />
       </div>
-      
+
+      <WhyChooseUsSection />
+
       <CarChatbot />
 
-      <div className="h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center text-white">
-          <h2 className="text-4xl font-bold mb-4">Próxima Seção</h2>
-          <p>Conteúdo adicional da sua página...</p>
-        </div>
-      </div>
+      <AboutUsSection />
+
+      <TestimonialsPage />
+
+      <ContactSection />
+
     </main>
   );
 }

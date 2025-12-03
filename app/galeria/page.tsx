@@ -8,4 +8,4 @@ export default function GaleriaPage() {
       </div>
     </main>
   )
-}
+} 

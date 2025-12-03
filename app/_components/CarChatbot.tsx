@@ -461,7 +461,7 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 py-12 md:py-20 bg-linear-to-br from-[#0F0900] via-[#1A1206] to-[#241A0B] relative overflow-hidden">
+    <section id="assistente" className="min-h-screen flex items-center justify-center px-4 py-12 md:py-20 bg-linear-to-br from-[#0F0900] via-[#1A1206] to-[#241A0B] relative overflow-hidden">
 
       {/* Background decorative elements */}
       <div className="absolute inset-0">
