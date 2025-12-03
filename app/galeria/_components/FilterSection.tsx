@@ -27,7 +27,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
         className="w-full flex items-center justify-between p-4 text-left focus:outline-none focus:ring-2 focus:ring-amber-500/20 rounded-xl"
       >
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-lg bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-200">
+          <div className="p-2.5 rounded-lg bg-linear-to-br from-amber-50 to-amber-100 border border-amber-200">
             <Filter className="w-4 h-4 text-amber-600" />
           </div>
           <h3 className="text-base font-bold text-gray-900">

@@ -5,37 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import React, { useState, useRef } from 'react'
 import PriceTag from './PriceTag'
-
-interface CarDetails {
-    portas: number
-    airbags: number
-    cor: string
-    motor: string
-    finalPlaca: string
-}
-
-interface Car {
-    id: number
-    name: string
-    brand: string
-    model: string
-    year: number
-    price: number
-    km: number
-    tipo: string
-    fuel: string
-    transmission: string
-    condition: 'Novo' | 'Semi-novo' | 'Usado'
-    estoque: string
-    mainImage: string
-    images: string[]
-    description: string
-    tags: string[]
-    details: CarDetails
-}
+import { Car as CarType } from '../../types/index'
 
 interface CarDetailsModalProps {
-    car: Car | null
+    car: CarType | null
     isOpen: boolean
     onClose: () => void
 }
@@ -131,7 +104,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ car, isOpen, onClose 
                                             }`}>
                                                 {car.condition}
                                             </span>
-                                            <span className="px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-50 to-amber-100 text-amber-700 text-sm font-semibold border border-amber-200">
+                                            <span className="px-3 py-1.5 rounded-full bg-linear-to-r from-amber-50 to-amber-100 text-amber-700 text-sm font-semibold border border-amber-200">
                                                 {car.tipo}
                                             </span>
                                         </div>
@@ -152,7 +125,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ car, isOpen, onClose 
                                     {/* Left Column - Mídia */}
                                     <div className="space-y-6">
                                         {/* Media Principal */}
-                                        <div className="relative aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200">
+                                        <div className="relative aspect-video rounded-2xl overflow-hidden bg-linear-to-br from-gray-50 to-gray-100 border-2 border-gray-200">
                                             {isVideoFile(allMedia[selectedMediaIndex]) ? (
                                                 <video
                                                     ref={videoRef}
@@ -230,7 +203,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ car, isOpen, onClose 
                                         </div>
 
                                         {/* Benefits Card */}
-                                        <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200">
+                                        <div className="bg-linear-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200">
                                             <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
                                                 <Shield className="w-6 h-6 text-emerald-600" />
                                                 Benefícios Inclusos
@@ -238,7 +211,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ car, isOpen, onClose 
                                             <div className="space-y-3">
                                                 {benefits.map((benefit, idx) => (
                                                     <div key={idx} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100">
-                                                        <benefit.icon className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                                                        <benefit.icon className="w-5 h-5 text-emerald-600 shrink-0" />
                                                         <span className="text-sm font-medium text-gray-700">{benefit.text}</span>
                                                     </div>
                                                 ))}
@@ -249,7 +222,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ car, isOpen, onClose 
                                     {/* Right Column - Detalhes */}
                                     <div className="space-y-8">
                                         {/* Price Card */}
-                                        <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border-2 border-amber-600/30 shadow-2xl">
+                                        <div className="bg-linear-to-br from-gray-900 to-black rounded-2xl p-8 border-2 border-amber-600/30 shadow-2xl">
                                             <div className="text-white mb-6">
                                                 <p className="text-sm opacity-80 mb-2">Valor do Veículo</p>
                                                 <div className="mt-2">
@@ -286,7 +259,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ car, isOpen, onClose 
                                             </div>
 
                                             {/* Safety & Details Card */}
-                                            <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200">
+                                            <div className="bg-linear-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200">
                                                 <h4 className="font-bold text-gray-900 mb-4 text-lg">Detalhes do Veículo</h4>
                                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                                     {safetySpecs.map((spec, idx) => (
@@ -299,7 +272,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ car, isOpen, onClose 
                                             </div>
 
                                             {/* Description */}
-                                            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200">
+                                            <div className="bg-linear-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200">
                                                 <h3 className="text-xl font-bold text-gray-900 mb-4">
                                                     Sobre este veículo
                                                 </h3>
@@ -317,7 +290,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ car, isOpen, onClose 
                                                 href={`https://wa.me/5527997597886?text=${encodeURIComponent(whatsappMessage)}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="block w-full py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold rounded-xl hover:shadow-xl transition-all flex items-center justify-center gap-3 text-lg group"
+                                                className="block w-full py-4 bg-linear-to-r from-emerald-500 to-emerald-600 text-white font-bold rounded-xl hover:shadow-xl transition-all items-center justify-center gap-3 text-lg group"
                                             >
                                                 <MessageCircle className="w-6 h-6" />
                                                 Falar com Consultor no WhatsApp
@@ -330,7 +303,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({ car, isOpen, onClose 
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 href="tel:+5527997597886"
-                                                className="w-full py-4 bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-3 text-lg"
+                                                className="w-full py-4 bg-linear-to-r from-amber-600 to-amber-500 text-white font-bold rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-3 text-lg"
                                             >
                                                 <Phone className="w-5 h-5" />
                                                 Ligar Agora

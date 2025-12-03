@@ -51,16 +51,16 @@ const PriceTag: React.FC<PriceTagProps> = ({ price, size = 'medium' }) => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className={`relative bg-gradient-to-br from-white to-gray-50 ${sizeClasses.container} border-2 border-amber-200 shadow-lg hover:shadow-xl transition-all duration-300 group`}
+            className={`relative bg-linear-to-br from-white to-gray-50 ${sizeClasses.container} border-2 border-amber-200 shadow-lg hover:shadow-xl transition-all duration-300 group`}
         >
             <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-200 shadow-sm`}>
+                <div className={`p-3 rounded-xl bg-linear-to-br from-amber-50 to-amber-100 border border-amber-200 shadow-sm`}>
                     <Tag className={`${sizeClasses.icon} text-amber-600`} />
                 </div>
                 <div className="flex-1">
                     <p className="text-sm text-gray-500 mb-2 font-medium">Valor Total</p>
                     <div className="flex items-baseline gap-2">
-                        <span className={`${sizeClasses.price} text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-500`}>
+                        <span className={`${sizeClasses.price} text-transparent bg-clip-text bg-linear-to-r from-amber-600 to-amber-500`}>
                             {formattedPrice}
                         </span>
                     </div>
@@ -68,6 +68,7 @@ const PriceTag: React.FC<PriceTagProps> = ({ price, size = 'medium' }) => {
             </div>
             
             {/* Decorative Elements */}
+            
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </motion.div>

@@ -1,4 +1,6 @@
-export const TIPO_OPTIONS = [
+import { Car } from '../../types/index'
+
+export const TIPO_OPTIONS: string[] = [
   'SUV',
   'Sedan',
   'Hatchback',
@@ -7,7 +9,7 @@ export const TIPO_OPTIONS = [
   'Caminhão',
 ]
 
-export const MARCA_OPTIONS = [
+export const MARCA_OPTIONS: string[] = [
   'Toyota',
   'Volkswagen',
   'Chevrolet',
@@ -20,7 +22,7 @@ export const MARCA_OPTIONS = [
   'Nissan',
 ]
 
-export const FUEL_TYPES = [
+export const FUEL_TYPES: string[] = [
   'Gasolina',
   'Etanol',
   'Diesel',
@@ -29,12 +31,12 @@ export const FUEL_TYPES = [
   'Híbrido',
 ]
 
-export const TRANSMISSION_TYPES = [
+export const TRANSMISSION_TYPES: string[] = [
   'Automática',
   'Manual',
 ]
 
-export const CAR_DATA = [
+export const CAR_DATA: Car[] = [
   {
     id: 1,
     name: 'Ford Fiesta Hatch 1.0 2012 Completo',
@@ -43,7 +45,7 @@ export const CAR_DATA = [
     year: 2012,
     price: 31900,
     km: 0,
-    tipo: 'Hatch',
+    tipo: 'Hatchback',
     fuel: 'Flex',
     transmission: 'Manual',
     condition: 'Semi-novo',
@@ -51,14 +53,14 @@ export const CAR_DATA = [
     mainImage: '/veiculos/fiestahatch/fiesta.jpeg',
     images: [
       '/veiculos/fiestahatch/fiesta.jpeg',
-      '/veiculos/fiestahatch/fiesta1.jpeg',
-      '/veiculos/fiestahatch/fiesta2.jpeg',
-      '/veiculos/fiestahatch/fiesta3.jpeg',
-      '/veiculos/fiestahatch/fiesta4.jpeg',
-      '/veiculos/fiestahatch/fiesta5.jpeg',
-      '/veiculos/fiestahatch/fiesta6.jpeg',
-      '/veiculos/fiestahatch/fiesta7.jpeg',
-      '/veiculos/fiestahatch/fiesta8.mp4' 
+      '/images/fiesta1.jpeg',
+      '/images/fiesta2.jpeg',
+      '/images/fiesta3.jpeg',
+      '/images/fiesta4.jpeg',
+      '/images/fiesta5.jpeg',
+      '/images/fiesta6.jpeg',
+      '/images/fiesta7.jpeg',
+      '/veiculos/fiestahatch/fiesta.mp4'
     ],
     description: 'Ford Fiesta Hatch 1.0 2012 completo, econômico e ideal para o dia a dia. Veículo revisado, documentação regularizada e pronto para entrega.',
     tags: ['Econômico', 'Completo', 'Manual'],

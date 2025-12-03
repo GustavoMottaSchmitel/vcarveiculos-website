@@ -15,55 +15,7 @@ import {
 import CarCard from '../galeria/_components/CarCard'
 import FilterSection from '../galeria/_components/FilterSection'
 import CarDetailsModal from '../galeria/_components/CarDetailsModal'
-
-// Interface do Carro (atualizada)
-interface Car {
-    id: number
-    name: string
-    brand: string
-    model: string
-    year: number
-    price: number
-    km: number
-    tipo: string
-    fuel: string
-    transmission: string
-    condition: 'Novo' | 'Semi-novo' | 'Usado'
-    mainImage: string
-    description: string
-    estoque: string
-    images: string[]
-    tags: string[]
-    details: {
-        motor: string
-        portas: number
-        airbags: number
-        cor: string
-        finalPlaca: string
-    }
-}
-
-// Estado dos Filtros
-interface FilterState {
-    searchTerm: string
-    selectedTipos: string[]
-    selectedMarcas: string[]
-    selectedConditions: string[]
-    selectedFuels: string[]
-    selectedTransmissions: string[]
-    minPrice: number
-    maxPrice: number
-}
-
-// Filtros do Chatbot
-interface ChatbotFilters {
-    profile?: 'familia' | 'trabalho' | 'primeiro-carro' | 'cidade'
-    budget?: 'ate-30' | '30-50' | '50-80' | '80-120'
-    fuelType?: 'flex' | 'gasolina' | 'diesel' | 'eletrico' | 'hibrido'
-    transmission?: 'automatico' | 'manual'
-    usage?: 'diario' | 'viagens' | 'trabalho'
-    financing?: 'sim' | 'nao'
-}
+import { Car as CarType, CarCardProps, FilterState, ChatbotFilters } from '../types'
 
 // Calcular limites de preço
 const MAX_PRICE_LIMIT = Math.max(...CAR_DATA.map(car => car.price))
@@ -173,20 +125,38 @@ const GaleriaContent: React.FC = () => {
         const params = new URLSearchParams(searchParams.toString())
         const filters: ChatbotFilters = {}
 
-        const paramMappings = {
-            profile: params.get('profile') as ChatbotFilters['profile'],
-            budget: params.get('budget') as ChatbotFilters['budget'],
-            fuelType: params.get('fuelType') as ChatbotFilters['fuelType'],
-            transmission: params.get('transmission') as ChatbotFilters['transmission'],
-            usage: params.get('usage') as ChatbotFilters['usage'],
-            financing: params.get('financing') as ChatbotFilters['financing']
-        }
+        // Extrair cada parâmetro com verificação de tipo
+        const profile = params.get('profile')
+        const budget = params.get('budget')
+        const fuelType = params.get('fuelType')
+        const transmission = params.get('transmission')
+        const usage = params.get('usage')
+        const financing = params.get('financing')
 
-        Object.entries(paramMappings).forEach(([key, value]) => {
-            if (value) {
-                filters[key as keyof ChatbotFilters] = value
-            }
-        })
+        // Atribuir com validação de tipo
+        if (profile && ['familia', 'trabalho', 'primeiro-carro', 'cidade'].includes(profile)) {
+            filters.profile = profile as ChatbotFilters['profile']
+        }
+        
+        if (budget && ['ate-30', '30-50', '50-80', '80-120'].includes(budget)) {
+            filters.budget = budget as ChatbotFilters['budget']
+        }
+        
+        if (fuelType && ['flex', 'gasolina', 'diesel', 'eletrico', 'hibrido'].includes(fuelType)) {
+            filters.fuelType = fuelType as ChatbotFilters['fuelType']
+        }
+        
+        if (transmission && ['automatico', 'manual'].includes(transmission)) {
+            filters.transmission = transmission as ChatbotFilters['transmission']
+        }
+        
+        if (usage && ['diario', 'viagens', 'trabalho'].includes(usage)) {
+            filters.usage = usage as ChatbotFilters['usage']
+        }
+        
+        if (financing && ['sim', 'nao'].includes(financing)) {
+            filters.financing = financing as ChatbotFilters['financing']
+        }
 
         return filters
     }, [searchParams])
@@ -215,14 +185,18 @@ const GaleriaContent: React.FC = () => {
     }, [chatbotFilters, hasChatbotFilters])
 
     const [filters, setFilters] = useState<FilterState>(initialFilters)
-    const [selectedCar, setSelectedCar] = useState<Car | null>(null)
+    const [selectedCar, setSelectedCar] = useState<CarType | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isFilterOpen, setIsFilterOpen] = useState(false)
 
     // Funções de controle
-    const openCarDetails = useCallback((car: Car) => {
-        setSelectedCar(car)
-        setIsModalOpen(true)
+    const openCarDetails = useCallback((car: CarCardProps) => {
+        // Encontrar o carro completo no CAR_DATA
+        const fullCar = CAR_DATA.find(c => c.id === car.id)
+        if (fullCar) {
+            setSelectedCar(fullCar)
+            setIsModalOpen(true)
+        }
     }, [])
 
     const closeCarDetails = useCallback(() => {
@@ -230,18 +204,31 @@ const GaleriaContent: React.FC = () => {
         setSelectedCar(null)
     }, [])
 
-    const handleFilterChange = useCallback((key: keyof FilterState, value: any) => {
-        setFilters(prev => ({ ...prev, [key]: value }))
+    // Função para atualizar filtros com tipos seguros
+    const handleFilterChange = useCallback(<K extends keyof FilterState>(
+        key: K,
+        value: FilterState[K]
+    ) => {
+        setFilters((prev: FilterState) => ({ ...prev, [key]: value }))
     }, [])
 
-    const handleOptionToggle = useCallback((key: keyof FilterState, option: string) => {
-        setFilters(prev => {
+    // Função para alternar opções
+    const handleOptionToggle = useCallback((
+        key: keyof FilterState,
+        option: string
+    ) => {
+        setFilters((prev: FilterState) => {
             const current = prev[key] as string[]
-            return {
-                ...prev,
-                [key]: current.includes(option) 
-                    ? current.filter(item => item !== option)
-                    : [...current, option]
+            if (current.includes(option)) {
+                return {
+                    ...prev,
+                    [key]: current.filter(item => item !== option)
+                }
+            } else {
+                return {
+                    ...prev,
+                    [key]: [...current, option]
+                }
             }
         })
     }, [])
@@ -292,7 +279,11 @@ const GaleriaContent: React.FC = () => {
     }, [filters])
 
     // Componentes de UI
-    const renderCheckboxes = (options: string[], selected: string[], key: keyof FilterState) => (
+    const renderCheckboxes = (
+        options: string[], 
+        selected: string[], 
+        key: keyof FilterState
+    ) => (
         <div className="space-y-2">
             {options.map(option => (
                 <label key={option} className="flex items-center cursor-pointer group">
@@ -590,13 +581,35 @@ const GaleriaContent: React.FC = () => {
                         <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
                             <AnimatePresence mode="wait">
                                 {filteredCars.length > 0 ? (
-                                    filteredCars.map((car) => (
-                                        <CarCard 
-                                            key={car.id} 
-                                            car={car} 
-                                            onViewDetails={openCarDetails} 
-                                        />
-                                    ))
+                                    filteredCars.map((car) => {
+                                        const carCardProps: CarCardProps = {
+                                            id: car.id,
+                                            name: car.name,
+                                            brand: car.brand,
+                                            model: car.model,
+                                            year: car.year,
+                                            price: car.price,
+                                            km: car.km,
+                                            tipo: car.tipo,
+                                            fuel: car.fuel,
+                                            transmission: car.transmission,
+                                            condition: car.condition,
+                                            mainImage: car.mainImage,
+                                            description: car.description,
+                                            estoque: car.estoque,
+                                            images: car.images,
+                                            tags: car.tags,
+                                            details: car.details
+                                        }
+                                        
+                                        return (
+                                            <CarCard 
+                                                key={car.id} 
+                                                car={carCardProps} 
+                                                onViewDetails={openCarDetails} 
+                                            />
+                                        )
+                                    })
                                 ) : (
                                     <motion.div
                                         key="not-found"
