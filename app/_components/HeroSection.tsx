@@ -260,51 +260,29 @@ export default function HeroSection() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  <motion.svg
-                    className="h-4 w-4 sm:h-5 sm:w-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    animate={{ rotate: [0, 10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </motion.svg>
-                  <span>Encontrar Meu Carro</span>
-                </span>
-                <div className="absolute inset-0 bg-linear-to-r from-yellow-400 to-amber-300 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              </motion.button>
 
-              <a href="/galeria">
-                <motion.button
-                  className="group relative rounded-lg border border-amber-500/30 bg-linear-to-r from-transparent to-amber-500/5 px-5 py-3 text-sm font-semibold tracking-wide text-amber-300 transition-all duration-300 hover:border-amber-400 hover:bg-amber-500/10 hover:text-amber-200 sm:px-6 sm:text-base"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
+                <a href="#assistente">
                   <span className="relative z-10 flex items-center justify-center gap-2">
-                    <svg
+                    <motion.svg
                       className="h-4 w-4 sm:h-5 sm:w-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      animate={{ rotate: [0, 10, 0] }}
+                      transition={{ duration: 2, repeat: Infinity }}
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       />
-                    </svg>
-                    <span>Ver Catálogo</span>
+                    </motion.svg>
+                    <span>Encontrar Meu Carro</span>
                   </span>
-                </motion.button>
-              </a>
+                </a>
+                <div className="absolute inset-0 bg-linear-to-r from-yellow-400 to-amber-300 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              </motion.button>
             </motion.div>
           </motion.div>
 

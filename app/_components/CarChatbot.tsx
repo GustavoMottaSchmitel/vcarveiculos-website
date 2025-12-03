@@ -12,7 +12,6 @@ interface CarChatbotProps {
 
 export interface CarFilters {
   name: string
-  email: string
   phone: string
   profile: string
   budget: string
@@ -49,15 +48,6 @@ const questions: QuestionType[] = [
     options: [],
     isPersonalInfo: true,
     inputType: 'text'
-  },
-  {
-    id: 'email',
-    title: 'Seu melhor e-mail',
-    subtitle: 'Receba as opções selecionadas',
-    icon: Mail,
-    options: [],
-    isPersonalInfo: true,
-    inputType: 'email'
   },
   {
     id: 'phone',
@@ -270,7 +260,6 @@ interface GalleryFilters {
   transmission: string
   sortBy: "year_desc" | "price_asc" | "price_desc" | "year_asc"
   name?: string
-  email?: string
   phone?: string
   profile?: string
   usage?: string
@@ -360,7 +349,6 @@ const convertChatbotFiltersToGalleryFilters = (chatbotFilters: CarFilters): Gall
   }
 
   if (chatbotFilters.name) filters.name = chatbotFilters.name
-  if (chatbotFilters.email) filters.email = chatbotFilters.email
   if (chatbotFilters.phone) filters.phone = chatbotFilters.phone
   if (chatbotFilters.profile) filters.profile = chatbotFilters.profile
   if (chatbotFilters.usage) filters.usage = chatbotFilters.usage
@@ -373,7 +361,6 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState<CarFilters>({
     name: '',
-    email: '',
     phone: '',
     profile: '',
     budget: '',
@@ -434,7 +421,6 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
   const getPlaceholder = (id: keyof CarFilters) => {
     switch (id) {
       case 'name': return 'Digite seu nome completo'
-      case 'email': return 'seu.email@exemplo.com'
       case 'phone': return '(11) 99999-9999'
       default: return ''
     }
