@@ -116,7 +116,8 @@ const convertChatbotFilters = (filters: ChatbotFilters): Partial<FilterState> =>
     return converted
 }
 
-const GaleriaContent: React.FC = () => {
+// Componente separado que usa useSearchParams
+function GaleriaContentWithParams() {
     const searchParams = useSearchParams()
     const router = useRouter()
 
@@ -745,6 +746,11 @@ const GaleriaContent: React.FC = () => {
             </div>
         </div>
     )
+}
+
+// Componente principal exportado
+const GaleriaContent: React.FC = () => {
+    return <GaleriaContentWithParams />
 }
 
 export default GaleriaContent
