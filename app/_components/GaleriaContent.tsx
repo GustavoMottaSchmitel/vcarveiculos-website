@@ -24,7 +24,8 @@ import {
   Phone,
   Check,
   ChevronUp,
-  ChevronRight as ChevronRightIcon
+  ChevronRight as ChevronRightIcon,
+  Sparkles
 } from "lucide-react"
 
 // Types
@@ -59,6 +60,28 @@ interface CarType {
   conservacao: string
   cambio: string
   estoque: string
+}
+
+// Interface para filtros da galeria (compatível com chatbot)
+interface GalleryFilters {
+  search: string
+  tipo: string[]
+  marca: string[]
+  minPrice: string
+  maxPrice: string
+  minKm: string
+  maxKm: string
+  year: string
+  fuel: string
+  transmission: string
+  sortBy: "year_desc" | "price_asc" | "price_desc" | "year_asc"
+  // Novos campos para informações do chatbot
+  name?: string
+  email?: string
+  phone?: string
+  profile?: string
+  usage?: string
+  financing?: string
 }
 
 interface FiltersType {
@@ -282,6 +305,17 @@ const MOCK_CARS: CarType[] = [
     estoque: "Vitória (ES)"
   }
 ]
+
+// Função auxiliar para obter label do perfil
+const getProfileLabel = (profile: string): string => {
+  switch (profile) {
+    case 'familia': return 'Para Família'
+    case 'trabalho': return 'Para Trabalho'
+    case 'primeiro-carro': return 'Primeiro Carro'
+    case 'cidade': return 'Uso na Cidade'
+    default: return profile
+  }
+}
 
 // Componentes reutilizáveis
 const PriceTag = ({ price, originalPrice }: { price: number, originalPrice?: number }) => (
@@ -602,19 +636,39 @@ const isValidSortByOption = (value: string): value is FiltersType['sortBy'] => {
   return ['price_asc', 'price_desc', 'year_desc', 'year_asc'].includes(value)
 }
 
+// Função para converter string para array de marcas válidas
+const parseMarcaParam = (marcaParam: string[]): MarcaOption[] => {
+  return marcaParam.filter((m): m is MarcaOption => isValidMarcaOption(m))
+}
+
+// Função para converter string para array de tipos válidos
+const parseTipoParam = (tipoParam: string[]): TipoOption[] => {
+  return tipoParam.filter((t): t is TipoOption => isValidTipoOption(t))
+}
+
 // Componente principal que usa useSearchParams
 const GaleriaContentInner = () => {
   const searchParams = useSearchParams()
+  const [showFilters, setShowFilters] = useState(false) // Começar com filtros ocultos quando vier do chatbot
+  const [selectedCar, setSelectedCar] = useState<CarType | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  
+  // Extrair parâmetros da URL
+  const name = searchParams.get('name') || ''
+  const email = searchParams.get('email') || ''
+  const phone = searchParams.get('phone') || ''
+  const profile = searchParams.get('profile') || ''
+  const marcaParam = searchParams.get('marca')?.split(',') || []
+  const tipoParam = searchParams.get('tipo')?.split(',') || []
+  
+  // Verificar se veio do chatbot
+  const cameFromChatbot = Boolean(name || profile || marcaParam.length > 0)
+  
   const [filters, setFilters] = useState<FiltersType>(() => {
-    // Extrair filtros da URL com validação de tipos
-    const search = searchParams.get('search') || ''
-    const marcaParam = searchParams.get('marca')?.split(',') || []
-    const tipoParam = searchParams.get('tipo')?.split(',') || []
-    const sortByParam = searchParams.get('sortBy')
-    
+    // Se veio do chatbot, inicializar com os filtros da URL
     return {
-      tipo: tipoParam.filter((t): t is TipoOption => isValidTipoOption(t)),
-      marca: marcaParam.filter((m): m is MarcaOption => isValidMarcaOption(m)),
+      tipo: parseTipoParam(tipoParam),
+      marca: parseMarcaParam(marcaParam),
       minPrice: searchParams.get('minPrice') || "",
       maxPrice: searchParams.get('maxPrice') || "",
       minKm: searchParams.get('minKm') || "",
@@ -622,13 +676,12 @@ const GaleriaContentInner = () => {
       year: searchParams.get('year') || "",
       fuel: searchParams.get('fuel') || "",
       transmission: searchParams.get('transmission') || "",
-      search: search,
-      sortBy: sortByParam && isValidSortByOption(sortByParam) ? sortByParam : "year_desc"
+      search: searchParams.get('search') || "",
+      sortBy: searchParams.get('sortBy') && isValidSortByOption(searchParams.get('sortBy')!) 
+        ? searchParams.get('sortBy') as FiltersType['sortBy']
+        : "year_desc"
     }
   })
-  const [showFilters, setShowFilters] = useState(true)
-  const [selectedCar, setSelectedCar] = useState<CarType | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const carsWithSingleImage = useMemo(() => 
     MOCK_CARS.map(car => ({
@@ -789,6 +842,35 @@ const GaleriaContentInner = () => {
           </div>
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center space-y-4">
+              {cameFromChatbot && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gradient-to-r from-[#B8860B]/20 to-[#FFD700]/10 border border-[#DAA520]/30 px-6 py-4 rounded-xl backdrop-blur-sm mb-4 max-w-2xl mx-auto"
+                >
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#B8860B] to-[#FFD700] flex items-center justify-center">
+                      <Sparkles className="w-6 h-6 text-gray-900" />
+                    </div>
+                    <div className="text-left">
+                      {name && (
+                        <h3 className="text-lg font-bold text-white">Olá, {name}!</h3>
+                      )}
+                      <p className="text-[#FFD700] text-sm">
+                        {filteredCars.length > 0 
+                          ? `Encontramos ${filteredCars.length} veículos baseados nas suas preferências`
+                          : 'Buscando veículos para você...'}
+                      </p>
+                      {profile && (
+                        <p className="text-gray-300 text-xs mt-1">
+                          Perfil: {getProfileLabel(profile)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
               <div className="inline-flex items-center gap-3 bg-gradient-to-r from-[#B8860B]/20 to-[#FFD700]/10 border border-[#DAA520]/30 px-6 py-3 rounded-full backdrop-blur-sm">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#B8860B] to-[#FFD700] flex items-center justify-center shadow-lg">
                   <Car className="w-4 h-4 text-gray-900" />
@@ -857,6 +939,11 @@ const GaleriaContentInner = () => {
               >
                 <Filter className="w-5 h-5" />
                 {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
+                {activeFilterCount > 0 && (
+                  <span className="ml-1 bg-white text-[#B8860B] text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {activeFilterCount}
+                  </span>
+                )}
               </motion.button>
             </div>
           </div>
@@ -1057,13 +1144,56 @@ const GaleriaContentInner = () => {
                     {(filters.minPrice || filters.maxPrice) && (
                       <span className="px-3 py-1 bg-gradient-to-r from-[#B8860B] to-[#DAA520] text-white rounded-full text-sm flex items-center gap-1">
                         Preço: {filters.minPrice ? `R$ ${parseInt(filters.minPrice).toLocaleString('pt-BR')}` : 'Qualquer'} - {filters.maxPrice ? `R$ ${parseInt(filters.maxPrice).toLocaleString('pt-BR')}` : 'Qualquer'}
-                        <button onClick={() => handleFilterChange('minPrice', '')} className="ml-1 hover:text-gray-300">
+                        <button onClick={() => {
+                          handleFilterChange('minPrice', '')
+                          handleFilterChange('maxPrice', '')
+                        }} className="ml-1 hover:text-gray-300">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {filters.fuel && (
+                      <span className="px-3 py-1 bg-gradient-to-r from-[#B8860B] to-[#DAA520] text-white rounded-full text-sm flex items-center gap-1">
+                        Combustível: {filters.fuel}
+                        <button onClick={() => handleFilterChange('fuel', '')} className="ml-1 hover:text-gray-300">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {filters.transmission && (
+                      <span className="px-3 py-1 bg-gradient-to-r from-[#B8860B] to-[#DAA520] text-white rounded-full text-sm flex items-center gap-1">
+                        Transmissão: {filters.transmission}
+                        <button onClick={() => handleFilterChange('transmission', '')} className="ml-1 hover:text-gray-300">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
                     )}
                   </div>
                 </div>
+              )}
+
+              {/* Info do Chatbot */}
+              {cameFromChatbot && (filters.marca.length > 0 || filters.minPrice || filters.maxPrice || filters.fuel || filters.transmission) && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 p-4 bg-gradient-to-r from-[#B8860B]/10 to-[#FFD700]/5 border border-[#DAA520]/30 rounded-xl"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="w-5 h-5 text-[#DAA520]" />
+                    <h3 className="font-semibold text-gray-800">Filtros aplicados do assistente:</h3>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {filters.marca.length > 0 && (
+                      <p>• Marcas recomendadas: {filters.marca.join(', ')}</p>
+                    )}
+                    {filters.minPrice && filters.maxPrice && (
+                      <p>• Faixa de preço: R$ {parseInt(filters.minPrice).toLocaleString('pt-BR')} - R$ {parseInt(filters.maxPrice).toLocaleString('pt-BR')}</p>
+                    )}
+                    {filters.fuel && <p>• Combustível: {filters.fuel}</p>}
+                    {filters.transmission && <p>• Transmissão: {filters.transmission}</p>}
+                  </div>
+                </motion.div>
               )}
 
               {/* Cars Grid */}
