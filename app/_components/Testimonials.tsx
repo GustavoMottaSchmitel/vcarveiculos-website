@@ -78,7 +78,7 @@ export default function TestimonialsPage() {
   }
 
   return (
-    <section className="min-h-screen bg-linear-to-b from-[#0F0900] via-[#1A1206] to-[#241A0B] py-12 md:py-20">
+    <section id="depoimentos" className="min-h-screen bg-linear-to-b from-[#0F0900] via-[#1A1206] to-[#241A0B] py-12 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Header da Seção */}

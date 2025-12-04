@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import Link from "next/link"
+import Image from "next/image"
 import { 
   Shield, 
   Award, 
@@ -12,7 +12,8 @@ import {
   Star,
   TrendingUp,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  MessageCircle
 } from "lucide-react"
 
 const WhyChooseUsSection = () => {
@@ -20,78 +21,128 @@ const WhyChooseUsSection = () => {
     {
       icon: Shield,
       title: "Garantia Total",
-      description: "Vveículos com garantia e laudo técnico completo. Segurança e tranquilidade para sua compra.",
-      color: "from-emerald-500 to-teal-600"
+      description: "Veículos com garantia e laudo técnico completo.",
+      color: "from-emerald-500 to-teal-600",
+      image: "/whychooseus/garantia.jpg"
     },
     {
       icon: Award,
-      title: "Preço Justo Garantido",
-      description: "Trabalhamos com transparência total nos preços e condições.",
-      color: "from-amber-500 to-orange-600"
+      title: "Preço Justo",
+      description: "Transparência total nos preços e condições.",
+      color: "from-amber-500 to-orange-600",
+      image: "/whychooseus/balanca.jpg"
     },
     {
       icon: Clock,
       title: "Processo Ágil",
-      description: "Da escolha à entrega com agilidade e qualidade. Documentação rápida e desburocratizada.",
-      color: "from-blue-500 to-cyan-600"
+      description: "Documentação rápida e desburocratizada.",
+      color: "from-blue-500 to-cyan-600",
+      image: "/whychooseus/workflow.jpg"
     },
     {
       icon: Users,
       title: "Atendimento Especial",
-      description: "Especialistas dedicados para entender suas necessidades e encontrar o veículo perfeito para você.",
-      color: "from-purple-500 to-pink-600"
+      description: "Especialistas para encontrar o veículo perfeito.",
+      color: "from-purple-500 to-pink-600",
+      image: "/whychooseus/customerservice.jpg"
     },
     {
       icon: Car,
       title: "Veículos Selecionados",
-      description: "Apenas veículos com procedência comprovada e em excelente estado de conservação.",
-      color: "from-red-500 to-rose-600"
+      description: "Procedência comprovada e excelente estado.",
+      color: "from-red-500 to-rose-600",
+      image: "/whychooseus/car-inspection.jpg"
     },
     {
       icon: CheckCircle,
       title: "Pós-venda Excepcional",
-      description: "Acompanhamento completo após a compra. Suporte sempre que precisar.",
-      color: "from-green-500 to-emerald-600"
+      description: "Acompanhamento completo após a compra.",
+      color: "from-green-500 to-emerald-600",
+      image: "/whychooseus/customersatisfaction.jpg"
     }
   ]
 
   const stats = [
-    { value: "50+", label: "Veículos Entregues", icon: Car },
-    { value: "100%", label: "Clientes Satisfeitos", icon: Star },
-    { value: "0%", label: "Reclamações", icon: TrendingUp },
-    { value: "24h", label: "Resposta Rápida", icon: Clock }
+    { value: "50+", label: "Veículos Entregues", icon: Car, color: "from-[#B8860B] to-[#FFD700]" },
+    { value: "100%", label: "Clientes Satisfeitos", icon: Star, color: "from-emerald-500 to-green-600" },
+    { value: "0%", label: "Reclamações", icon: TrendingUp, color: "from-blue-500 to-cyan-600" },
+    { value: "24h", label: "Resposta Rápida", icon: Clock, color: "from-purple-500 to-pink-600" }
   ]
 
   return (
-    <section className="py-20 bg-linear-to-b from-white via-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-3 mb-6 p-4 bg-linear-to-r from-[#B8860B]/10 to-[#D4AF37]/5 backdrop-blur-sm rounded-2xl border border-[#DAA520]/30"
-          >
-            <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#B8860B] to-[#FFD700] flex items-center justify-center shadow-lg">
-              <Sparkles className="w-6 h-6 text-white" />
+    <section className="relative py-20 bg-linear-to-b from-white via-gray-50 to-white overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-linear-to-bl from-[#FFD700]/5 to-transparent rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-linear-to-tr from-[#B8860B]/5 to-transparent rounded-full blur-3xl" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Header with Visual Hero */}
+        <div className="relative mb-16">
+          <div className="relative h-64 md:h-80 rounded-3xl overflow-hidden mb-8">
+            <Image
+              src="/whychooseus/1.jpg"
+              alt="VCar Veículos - Concessionária Premium"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-linear-to-r from-black/70 via-black/50 to-transparent" />
+            <div className="absolute inset-0 flex items-center px-8">
+              <div className="max-w-2xl">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="inline-flex items-center gap-3 mb-6 p-4 bg-linear-to-r from-[#B8860B]/20 to-[#D4AF37]/10 backdrop-blur-sm rounded-2xl border border-[#DAA520]/30"
+                >
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#B8860B] to-[#FFD700] flex items-center justify-center shadow-lg">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <h2 className="text-xl font-bold text-white">Nosso Diferencial</h2>
+                    <p className="text-sm text-[#FFD700]">Excelência em cada detalhe</p>
+                  </div>
+                </motion.div>
+                
+                <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  Por que escolher a <span className="text-transparent bg-clip-text bg-linear-to-r from-[#FFD700] to-[#DAA520]">VCar Veículos</span>?
+                </h1>
+              </div>
             </div>
-            <div className="text-left">
-              <h2 className="text-xl font-bold text-gray-900">Nosso Diferencial</h2>
-              <p className="text-sm text-[#D4AF37]">Excelência em cada detalhe</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <p className="text-lg text-gray-600 leading-relaxed mb-6">
+                Há mais de 2 anos transformando sonhos em realidade. Somos mais que uma concessionária, 
+                somos seu parceiro confiável na jornada de encontrar o veículo perfeito.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2 px-4 py-2 bg-[#B8860B]/10 rounded-lg">
+                  <CheckCircle className="w-5 h-5 text-[#B8860B]" />
+                  <span className="text-gray-700">Atendimento Personalizado</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 bg-[#B8860B]/10 rounded-lg">
+                  <CheckCircle className="w-5 h-5 text-[#B8860B]" />
+                  <span className="text-gray-700">Garantia de Satisfação</span>
+                </div>
+              </div>
             </div>
-          </motion.div>
-          
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Por que escolher a <span className="text-transparent bg-clip-text bg-linear-to-r from-[#B8860B] to-[#DAA520]">VCar Veículos</span>?
-          </h1>
-          
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Há mais de 2 anos transformando sonhos em realidade. Somos mais que uma concessionária, 
-            somos seu parceiro confiável na jornada de encontrar o veículo perfeito.
-          </p>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative h-64 rounded-2xl overflow-hidden shadow-2xl"
+            >
+              <Image
+                src="/whychooseus/why.jpg"
+                alt="Showroom VCar"
+                fill
+                className="object-cover"
+              />
+            </motion.div>
+          </div>
         </div>
 
-        {/* Stats */}
+        {/* Stats with Visual Cards */}
         <div className="mb-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
@@ -100,141 +151,88 @@ const WhyChooseUsSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-linear-to-br from-white to-gray-50 rounded-2xl p-6 border-2 border-[#DAA520]/20 shadow-lg hover:shadow-xl transition-shadow"
+                className="relative group overflow-hidden rounded-2xl bg-white border-2 border-[#DAA520]/10 shadow-lg hover:shadow-2xl transition-all duration-300"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`p-3 rounded-xl bg-linear-to-br from-[#B8860B]/10 to-[#FFD700]/5`}>
-                    <stat.icon className="w-6 h-6 text-[#DAA520]" />
+                <div className="absolute inset-0 bg-linear-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`p-3 rounded-xl bg-linear-to-br ${stat.color} shadow-lg`}>
+                      <stat.icon className="w-6 h-6 text-white" />
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold text-[#B8860B]">{stat.value}</div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold bg-linear-to-br bg-clip-text text-transparent from-[#B8860B] to-[#DAA520]">
+                      {stat.value}
+                    </div>
+                    <p className="font-semibold text-gray-900 mt-2">{stat.label}</p>
                   </div>
-                </div>
-                <div className="text-center">
-                  <p className="font-semibold text-gray-900">{stat.label}</p>
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
 
-        {/* Benefits Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {benefits.map((benefit, index) => (
-            <motion.div
-              key={benefit.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
-              className="group relative"
-            >
-              <div className="absolute inset-0 bg-linear-to-br from-white to-gray-50 rounded-2xl border-2 border-[#DAA520]/20 shadow-lg group-hover:shadow-2xl transition-all duration-300 transform group-hover:border-[#DAA520]/40" />
-              
-              <div className="relative p-8 h-full">
-                <div className="flex items-start gap-4 mb-6">
-                  <div className={`p-4 rounded-xl bg-linear-to-br ${benefit.color} shadow-lg`}>
-                    <benefit.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 pt-1">{benefit.title}</h3>
-                </div>
-                
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {benefit.description}
-                </p>
-                
-                <div className="absolute bottom-8 left-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="flex items-center gap-2 text-[#B8860B] font-semibold">
-                    <span>Saiba mais</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6 }}
-          className="relative overflow-hidden rounded-3xl"
-        >
-          {/* Background Gradients */}
-          <div className="absolute inset-0">
-            <div className="absolute top-0 left-0 w-64 h-64 bg-linear-to-br from-[#B8860B]/20 to-[#FFD700]/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-0 w-80 h-80 bg-linear-to-tr from-[#DAA520]/15 to-[#B8860B]/10 rounded-full blur-3xl" />
+        {/* Benefits Grid with Images */}
+        <div className="mb-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Nossos <span className="text-transparent bg-clip-text bg-linear-to-r from-[#B8860B] to-[#DAA520]">Principais Diferenciais</span>
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Descubra por que somos a escolha certa para sua próxima aquisição
+            </p>
           </div>
           
-          {/* Content */}
-          <div className="relative bg-linear-to-br from-[#1A1206] to-[#2D210F] border-2 border-[#DAA520]/30 rounded-3xl p-12 text-center">
-            <div className="max-w-2xl mx-auto">
-              <div className="inline-flex items-center gap-3 mb-6 p-3 bg-linear-to-r from-[#B8860B]/20 to-[#FFD700]/10 rounded-full backdrop-blur-sm">
-              </div>
-              
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Pronto para encontrar seu <span className="text-transparent bg-clip-text bg-linear-to-r from-[#FFD700] to-[#B8860B]">veículo ideal</span>?
-              </h2>
-              
-              <p className="text-gray-300 text-lg mb-8 max-w-xl mx-auto">
-                Explore nossa seleção premium de veículos novos e seminovos. 
-                Cada um cuidadosamente selecionado para oferecer qualidade, segurança e satisfação.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    href="/galeria"
-                    className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-linear-to-r from-[#B8860B] to-[#FFD700] text-gray-900 font-bold rounded-xl hover:from-[#DAA520] hover:to-[#FFD700] transition-all duration-300 shadow-2xl hover:shadow-3xl text-lg"
-                  >
-                    <Car className="w-6 h-6" />
-                    Ver Carros Disponíveis
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </motion.div>
-                
-                <motion.a
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  href="#assistente"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-linear-to-r from-[#1A1206] to-[#2D210F] border-2 border-[#DAA520] text-[#FFD700] font-bold rounded-xl hover:bg-[#DAA520]/10 transition-all duration-300 shadow-xl text-lg"
-                >
-                  <span>Falar com Assistente agora!</span>
-                  <ArrowRight className="w-5 h-5" />
-                </motion.a>
-              </div>
-              
-              <div className="mt-8 flex flex-wrap justify-center gap-6">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-emerald-400" />
-                  <span className="text-gray-300 text-sm">Sem compromisso</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {benefits.map((benefit, index) => (
+              <motion.div
+                key={benefit.title}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -5 }}
+                className="group relative overflow-hidden rounded-2xl bg-white border-2 border-[#DAA520]/10 shadow-lg hover:shadow-2xl transition-all duration-300"
+              >
+                <div className="flex flex-col md:flex-row">
+                  <div className="md:w-1/3 relative h-48 md:h-auto">
+                    <Image
+                      src={benefit.image}
+                      alt={benefit.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
+                    <div className="absolute top-4 left-4">
+                      <div className={`p-3 rounded-xl bg-linear-to-br ${benefit.color} shadow-lg`}>
+                        <benefit.icon className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="md:w-2/3 p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{benefit.title}</h3>
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      {benefit.description}
+                    </p>
+                    <div className="flex items-center gap-2 text-[#B8860B] font-semibold group-hover:gap-3 transition-all duration-300">
+                      <span>Saiba mais</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-emerald-400" />
-                  <span className="text-gray-300 text-sm">Atendimento personalizado</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-emerald-400" />
-                  <span className="text-gray-300 text-sm">Melhor preço garantido</span>
-                </div>
-              </div>
-            </div>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Testimonial Preview */}
+        {/* Single Testimonial */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="mt-20"
+          transition={{ delay: 0.6 }}
+          className="mb-16"
         >
-          <div className="bg-linear-to-br from-white to-gray-50 rounded-2xl border-2 border-[#DAA520]/20 p-8">
+          <div className="bg-linear-to-br from-white to-gray-50 rounded-2xl border-2 border-[#DAA520]/20 p-8 shadow-lg">
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="md:w-2/3">
                 <div className="flex items-center gap-2 mb-4">
@@ -265,14 +263,80 @@ const WhyChooseUsSection = () => {
                     ))}
                   </div>
                   <p className="text-gray-600">Média de avaliações</p>
-                  <motion.button
+                  <motion.a
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="text-sm text-[#B8860B] hover:text-[#DAA520] font-semibold flex items-center gap-1"
+                    href="#depoimentos"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-[#B8860B] to-[#FFD700] text-white font-semibold rounded-xl hover:from-[#DAA520] hover:to-[#FFD700] transition-all duration-300 shadow-lg"
                   >
                     Ver mais depoimentos
                     <ArrowRight className="w-4 h-4" />
-                  </motion.button>
+                  </motion.a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Single CTA Section */}
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.8 }}
+          className="relative overflow-hidden rounded-3xl"
+        >
+
+          {/* Background Image */}
+
+          <div className="absolute inset-0">
+            <Image
+              src="/whychooseus/car.jpg"
+              alt="Carro premium"
+              fill
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-linear-to-r from-[#1A1206]/95 via-[#1A1206]/90 to-[#2D210F]/85" />
+          </div>
+          
+          {/* Content */}
+          <div className="relative p-12 text-center">
+            <div className="max-w-xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Pronto para encontrar seu <span className="text-transparent bg-clip-text bg-linear-to-r from-[#FFD700] to-[#B8860B]">veículo ideal</span>?
+              </h2>
+              
+              <p className="text-gray-300 text-lg mb-8">
+                Fale com nosso assistente virtual e descubra as melhores opções para você
+              </p>
+              
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-block"
+              >
+                <a
+                  href="#assistente"
+                  className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-linear-to-r from-[#B8860B] to-[#FFD700] text-gray-900 font-bold rounded-xl hover:from-[#DAA520] hover:to-[#FFD700] transition-all duration-300 shadow-2xl hover:shadow-3xl text-lg w-full sm:w-auto"
+                >
+                  <MessageCircle className="w-6 h-6" />
+                  Falar com Assistente Agora
+                  <ArrowRight className="w-5 h-5" />
+                </a>
+              </motion.div>
+              
+              <div className="mt-8 flex flex-wrap justify-center gap-6">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                  <span className="text-gray-300 text-sm">Atendimento 24/7</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                  <span className="text-gray-300 text-sm">Sem compromisso</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                  <span className="text-gray-300 text-sm">Resposta imediata</span>
                 </div>
               </div>
             </div>

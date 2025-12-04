@@ -53,14 +53,14 @@ export const CAR_DATA: Car[] = [
     mainImage: '/veiculos/fiestahatch/fiesta.jpeg',
     images: [
       '/veiculos/fiestahatch/fiesta.jpeg',
-      '/images/fiesta1.jpeg',
-      '/images/fiesta2.jpeg',
-      '/images/fiesta3.jpeg',
-      '/images/fiesta4.jpeg',
-      '/images/fiesta5.jpeg',
-      '/images/fiesta6.jpeg',
-      '/images/fiesta7.jpeg',
-      '/veiculos/fiestahatch/fiesta.mp4'
+      '/veiculos/fiestahatch/fiesta1.jpeg',
+      '/veiculos/fiestahatch/fiesta2.jpeg',
+      '/veiculos/fiestahatch/fiesta3.jpeg',
+      '/veiculos/fiestahatch/fiesta4.jpeg',
+      '/veiculos/fiestahatch/fiesta5.jpeg',
+      '/veiculos/fiestahatch/fiesta6.jpeg',
+      '/veiculos/fiestahatch/fiesta7.jpeg',
+      '/veiculos/fiestahatch/fiesta8.mp4'
     ],
     description: 'Ford Fiesta Hatch 1.0 2012 completo, econômico e ideal para o dia a dia. Veículo revisado, documentação regularizada e pronto para entrega.',
     tags: ['Econômico', 'Completo', 'Manual'],

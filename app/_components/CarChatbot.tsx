@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Car, DollarSign, MapPin, Users, Fuel, Cog, Phone, Mail, User, Check, CreditCard, Calendar, Sparkles } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 interface CarChatbotProps {
   onFilterComplete?: (filters: CarFilters) => void
@@ -129,28 +130,28 @@ const questions: QuestionType[] = [
     icon: MapPin,
     options: [
       {
-        value: 'urbano',
-        label: 'Na Cidade',
-        description: 'Deslocamentos diários',
-        icon: '🚦'
+        value: 'diario',
+        label: 'Uso Diário',
+        description: 'Deslocamentos frequentes',
+        icon: '🚗'
       },
       {
-        value: 'estrada',
+        value: 'viagens',
         label: 'Viagens',
         description: 'Estrada frequente',
         icon: '🛣️'
       },
       {
-        value: 'misturado',
-        label: 'Uso Misto',
-        description: 'Cidade e estrada',
-        icon: '🔄'
-      },
-      {
-        value: 'carregamento',
-        label: 'Transporte',
+        value: 'trabalho',
+        label: 'Para Trabalho',
         description: 'Capacidade de carga',
         icon: '📦'
+      },
+      {
+        value: 'lazer',
+        label: 'Lazer',
+        description: 'Finais de semana e passeios',
+        icon: '🌴'
       }
     ]
   },
@@ -219,145 +220,29 @@ const questions: QuestionType[] = [
     icon: CreditCard,
     options: [
       {
-        value: 'sim-financiar',
+        value: 'sim',
         label: 'Financiamento',
         description: 'Parcelas acessíveis',
         icon: '📋'
       },
       {
-        value: 'parcelar',
-        label: 'Parcelamento Direto',
-        description: 'Condições especiais',
-        icon: '💳'
-      },
-      {
-        value: 'a-vista',
+        value: 'nao',
         label: 'À Vista',
         description: 'Desconto especial',
         icon: '💰'
       },
       {
-        value: 'consorcio',
-        label: 'Consórcio',
-        description: 'Planejamento seguro',
+        value: 'analisar',
+        label: 'A Analisar',
+        description: 'Ver melhores condições',
         icon: '📊'
       }
     ]
   }
 ]
 
-// Função para converter filtros do chatbot para filtros da galeria
-interface GalleryFilters {
-  search: string
-  tipo: string[]
-  marca: string[]
-  minPrice: string
-  maxPrice: string
-  minKm: string
-  maxKm: string
-  year: string
-  fuel: string
-  transmission: string
-  sortBy: "year_desc" | "price_asc" | "price_desc" | "year_asc"
-  name?: string
-  phone?: string
-  profile?: string
-  usage?: string
-  financing?: string
-}
-
-// Função para converter filtros do chatbot para filtros da galeria
-const convertChatbotFiltersToGalleryFilters = (chatbotFilters: CarFilters): GalleryFilters => {
-  const filters: GalleryFilters = {
-    search: '',
-    tipo: [],
-    marca: [],
-    minPrice: "",
-    maxPrice: "",
-    minKm: "",
-    maxKm: "",
-    year: "",
-    fuel: "",
-    transmission: "",
-    sortBy: "year_desc"
-  }
-
-  // Converter perfil para tags/marcas
-  if (chatbotFilters.profile) {
-    switch (chatbotFilters.profile) {
-      case 'familia':
-        filters.marca = ['CHEVROLET', 'FIAT', 'VOLKSWAGEN']
-        break
-      case 'trabalho':
-        filters.marca = ['FORD', 'TOYOTA']
-        break
-      case 'primeiro-carro':
-        filters.marca = ['CHEVROLET', 'FIAT', 'RENAULT', 'VOLKSWAGEN']
-        break
-      case 'cidade':
-        filters.marca = ['CHEVROLET', 'FIAT', 'HYUNDAI']
-        break
-    }
-  }
-
-  // Converter orçamento para faixa de preço
-  if (chatbotFilters.budget) {
-    switch (chatbotFilters.budget) {
-      case 'ate-30':
-        filters.maxPrice = "30000"
-        break
-      case '30-50':
-        filters.minPrice = "30000"
-        filters.maxPrice = "50000"
-        break
-      case '50-80':
-        filters.minPrice = "50000"
-        filters.maxPrice = "80000"
-        break
-      case '80-120':
-        filters.minPrice = "80000"
-        filters.maxPrice = "120000"
-        break
-    }
-  }
-
-  // Converter tipo de combustível
-  if (chatbotFilters.fuelType) {
-    switch (chatbotFilters.fuelType) {
-      case 'flex':
-        filters.fuel = 'Flex'
-        break
-      case 'gasolina':
-        filters.fuel = 'Gasolina'
-        break
-      case 'diesel':
-        filters.fuel = 'Diesel'
-        break
-    }
-  }
-
-  // Converter transmissão
-  if (chatbotFilters.transmission) {
-    switch (chatbotFilters.transmission) {
-      case 'automatico':
-        filters.transmission = 'Automático'
-        break
-      case 'manual':
-        filters.transmission = 'Manual'
-        break
-    }
-  }
-
-  if (chatbotFilters.name) filters.name = chatbotFilters.name
-  if (chatbotFilters.phone) filters.phone = chatbotFilters.phone
-  if (chatbotFilters.profile) filters.profile = chatbotFilters.profile
-  if (chatbotFilters.usage) filters.usage = chatbotFilters.usage
-  if (chatbotFilters.financing) filters.financing = chatbotFilters.financing
-
-  return filters
-}
-
 export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarChatbotProps) {
+  const router = useRouter()
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState<CarFilters>({
     name: '',
@@ -374,6 +259,38 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
   const isLastStep = currentStep === questions.length - 1
   const IconComponent = currentQuestion.icon
 
+  // Converter respostas para query params da galeria
+  const getGalleryQueryParams = () => {
+    const params: Record<string, string> = {}
+    
+    // Converter cada resposta do chatbot para os filtros da galeria
+    if (answers.profile) {
+      params.profile = answers.profile
+    }
+    
+    if (answers.budget) {
+      params.budget = answers.budget
+    }
+    
+    if (answers.usage) {
+      params.usage = answers.usage
+    }
+    
+    if (answers.fuelType && answers.fuelType !== 'indiferente') {
+      params.fuelType = answers.fuelType
+    }
+    
+    if (answers.transmission && answers.transmission !== 'indiferente') {
+      params.transmission = answers.transmission
+    }
+    
+    if (answers.financing) {
+      params.financing = answers.financing
+    }
+
+    return params
+  }
+
   const handleOptionClick = (value: string) => {
     const newAnswers = {
       ...answers,
@@ -383,10 +300,16 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
     setAnswers(newAnswers)
 
     if (isLastStep) {
+      // Quando chegar no último passo, processar os filtros
+      if (onFilterComplete) {
+        onFilterComplete(newAnswers)
+      }
+      
+      // Preparar para navegar para a galeria com os filtros
       setTimeout(() => {
-        if (onFilterComplete) {
-          onFilterComplete(newAnswers)
-        }
+        const queryParams = getGalleryQueryParams()
+        const queryString = new URLSearchParams(queryParams).toString()
+        router.push(`/galeria${queryString ? `?${queryString}` : ''}`)
       }, 500)
     } else {
       setTimeout(() => {
@@ -421,29 +344,16 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
   const getPlaceholder = (id: keyof CarFilters) => {
     switch (id) {
       case 'name': return 'Digite seu nome completo'
-      case 'phone': return '(11) 99999-9999'
+      case 'phone': return '(27) 99759-7886'
       default: return ''
     }
   }
 
-  // Converter CarFilters para query string para a galeria
-  const getQueryParams = () => {
-    const galleryFilters = convertChatbotFiltersToGalleryFilters(answers)
-
-    const params: Record<string, string> = {}
-
-    // Adicionar filtros convertidos
-    Object.entries(galleryFilters).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        if (value.length > 0) {
-          params[key] = value.join(',')
-        }
-      } else if (value && value !== "") {
-        params[key] = value.toString()
-      }
-    })
-
-    return params
+  // Botão para ir diretamente para a galeria com os filtros atuais
+  const handleGoToGallery = () => {
+    const queryParams = getGalleryQueryParams()
+    const queryString = new URLSearchParams(queryParams).toString()
+    router.push(`/galeria${queryString ? `?${queryString}` : ''}`)
   }
 
   return (
@@ -468,17 +378,17 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div className="text-left">
-              <h2 className="text-xl font-bold text-white">Assistente de Escolha Inteligente</h2>
-              <p className="text-sm text-[#D4AF37]">Encontre seu veículo ideal</p>
+              <h2 className="text-xl font-bold text-white">Assistente Inteligente</h2>
+              <p className="text-sm text-[#D4AF37]">100% integrado com a galeria</p>
             </div>
           </motion.div>
 
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Encontre o veículo perfeito para você
+            Encontre seu veículo ideal
           </h1>
 
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Em poucos passos, selecionamos as melhores opções para suas necessidades
+            Em poucos passos, mostramos os carros perfeitos para você
           </p>
         </div>
 
@@ -662,22 +572,22 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
             </motion.button>
           )}
 
-          {isLastStep && showGalleryButton && Object.values(answers).every(value => value) && (
-            <motion.div
+          {/* Botão para ir para galeria com os filtros já aplicados */}
+          {showGalleryButton && Object.values(answers).some(value => value) && (
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={handleGoToGallery}
+              disabled={!answers.profile && !answers.budget} // Precisa ter pelo menos perfil ou orçamento
+              className={`px-8 py-3 font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 ${
+                answers.profile || answers.budget
+                  ? 'bg-linear-to-r from-[#18803A] to-[#22C55E] text-white hover:from-[#166534] hover:to-[#16A34A]'
+                  : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+              }`}
             >
-              <Link
-                href={{
-                  pathname: '/galeria',
-                  query: getQueryParams()
-                }}
-                className="px-8 py-3 bg-linear-to-r from-[#18803A] to-[#22C55E] text-white font-semibold rounded-lg hover:from-[#166534] hover:to-[#16A34A] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2"
-              >
-                <span>Ver Veículos Recomendados</span>
-                <Car className="w-5 h-5" />
-              </Link>
-            </motion.div>
+              <span>Ver Veículos</span>
+              <Car className="w-5 h-5" />
+            </motion.button>
           )}
         </div>
 
@@ -692,12 +602,12 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
               <div className="w-5 h-5 rounded-full bg-linear-to-r from-[#B8860B] to-[#FFD700] flex items-center justify-center">
                 <Check className="w-3 h-3 text-gray-900" />
               </div>
-              <h4 className="text-lg font-semibold text-white">Suas preferências</h4>
+              <h4 className="text-lg font-semibold text-white">Seus Filtros Aplicados</h4>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {Object.entries(answers)
-                .filter(([value]) => value)
+                .filter(([key, value]) => value && key !== 'name' && key !== 'phone')
                 .map(([key, value], index) => {
                   const question = questions.find(q => q.id === key)
                   const option = question?.options?.find(opt => opt.value === value)
@@ -720,6 +630,16 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
                   )
                 })}
             </div>
+
+            {/* Mensagem de integração */}
+            <div className="mt-4 pt-4 border-t border-[#DAA520]/20">
+              <div className="flex items-center gap-2 text-sm text-[#D4AF37]">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Estes filtros serão aplicados automaticamente na galeria</span>
+              </div>
+            </div>
           </motion.div>
         )}
 
@@ -731,10 +651,12 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
               className="text-center p-4 bg-linear-to-br from-[#241A0B] to-[#2D210F] border border-[#DAA520]/30 rounded-xl hover:border-[#FFD700]/50 transition-all"
             >
               <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-linear-to-br from-[#B8860B] to-[#FFD700] flex items-center justify-center">
-                <Check className="w-5 h-5 text-gray-900" />
+                <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-              <h5 className="font-semibold text-white mb-1">Procedência Garantida</h5>
-              <p className="text-sm text-gray-300">Histórico completo e verificado</p>
+              <h5 className="font-semibold text-white mb-1">100% Integrado</h5>
+              <p className="text-sm text-gray-300">Filtros aplicados automaticamente</p>
             </motion.div>
 
             <motion.div
@@ -744,8 +666,8 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
               <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-linear-to-br from-[#B8860B] to-[#FFD700] flex items-center justify-center">
                 <CreditCard className="w-5 h-5 text-gray-900" />
               </div>
-              <h5 className="font-semibold text-white mb-1">Financiamento Facilitado</h5>
-              <p className="text-sm text-gray-300">Diversas condições de pagamento</p>
+              <h5 className="font-semibold text-white mb-1">Busca Inteligente</h5>
+              <p className="text-sm text-gray-300">Resultados personalizados</p>
             </motion.div>
 
             <motion.div
@@ -753,19 +675,20 @@ export function CarChatbot({ onFilterComplete, showGalleryButton = true }: CarCh
               className="text-center p-4 bg-linear-to-br from-[#241A0B] to-[#2D210F] border border-[#DAA520]/30 rounded-xl hover:border-[#FFD700]/50 transition-all"
             >
               <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-linear-to-br from-[#B8860B] to-[#FFD700] flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-gray-900" />
+                <Car className="w-5 h-5 text-gray-900" />
               </div>
-              <h5 className="font-semibold text-white mb-1">Processo Ágil</h5>
-              <p className="text-sm text-gray-300">Atendimento rápido e eficiente</p>
+              <h5 className="font-semibold text-white mb-1">Veículos Reais</h5>
+              <p className="text-sm text-gray-300">Estoque disponível para entrega</p>
             </motion.div>
           </div>
         </div>
 
         {/* Privacy Notice */}
+        
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-400">
             Seus dados estão protegidos.{" "}
-            <span className="text-[#D4AF37] font-medium">Privacidade garantida.</span>
+            <span className="text-[#D4AF37] font-medium">100% integrado com nossa galeria.</span>
           </p>
         </div>
       </div>
