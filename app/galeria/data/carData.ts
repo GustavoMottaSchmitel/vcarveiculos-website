@@ -72,4 +72,38 @@ export const CAR_DATA: Car[] = [
       finalPlaca: '0',
     },
   },
+  {
+    id: 2,
+    name: 'Fiat Uno 1.4 2012 Completo',
+    brand: 'Fiat',
+    model: 'Uno',
+    year: 2012,
+    price: 36990,
+    km: 0,
+    tipo: 'Hatchback',
+    fuel: 'Flex',
+    transmission: 'Manual',
+    condition: 'Semi-novo',
+    estoque: '1 unidade',
+    mainImage: '/veiculos/fiatuno/IMG_3664.jpeg',
+    images: [
+      '/veiculos/fiatuno/IMG_3657.jpeg',
+      '/veiculos/fiatuno/IMG_3658.jpeg',
+      '/veiculos/fiatuno/IMG_3659.jpeg',
+      '/veiculos/fiatuno/IMG_3660.jpeg',
+      '/veiculos/fiatuno/IMG_3663.jpeg',
+      '/veiculos/fiatuno/IMG_3664.jpeg',
+      '/veiculos/fiatuno/IMG_3665.jpeg'
+    ],
+    description:
+      'Fiat Uno 1.4 2012 completo, econômico, ágil e perfeito para o dia a dia. Segundo dono, veículo revisado, documentação em dia e pronto para transferência.',
+    tags: ['Econômico', 'Completo', 'Segundo Dono'],
+    details: {
+      motor: '1.4 Flex',
+      portas: 4,
+      airbags: 2,
+      cor: 'A definir',
+      finalPlaca: 'A definir',
+    },
+  }
 ]
