@@ -308,7 +308,6 @@ export const CAR_DATA: Car[] = [
       "/veiculos/pajerotr4/IMG_007.jpeg",
       "/veiculos/pajerotr4/IMG_008.jpeg",
       "/veiculos/pajerotr4/IMG_009.jpeg",
-      "/veiculos/pajerotr4/IMG_010.jpeg",
     ],
     description:
       "Mitsubishi Pajero TR4 2.0 4x2 2013 automática, SUV robusto e confiável, ideal para quem busca conforto e resistência no dia a dia. Equipada com motor 2.0 Flex e câmbio automático, oferece boa performance e dirigibilidade elevada. Versão completa, com ótimo espaço interno e posição de condução alta. Veículo com 131.000 km, bem conservado, documentação em dia e pronto para transferência.",
